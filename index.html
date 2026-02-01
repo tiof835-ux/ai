@@ -2,124 +2,91 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>IA Libre — Simulador</title>
+  <title>IA Experimental</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
-      margin: 0;
-      font-family: monospace;
       background: #0b0b0b;
       color: #eaeaea;
+      font-family: monospace;
+      margin: 0;
       display: flex;
       flex-direction: column;
       height: 100vh;
     }
-
-    header {
-      background: #111;
+    header, footer {
       padding: 1rem;
-      text-align: center;
       border-bottom: 1px solid #222;
     }
-
-    header h1 {
-      margin: 0;
-      color: #00ff9c;
-    }
-
     main {
       flex: 1;
       padding: 1rem;
       overflow-y: auto;
     }
-
-    .message {
-      margin-bottom: 1rem;
-    }
-
-    .ai {
-      color: #00ff9c;
-    }
-
-    .user {
-      color: #4da6ff;
-    }
-
-    footer {
-      display: flex;
-      border-top: 1px solid #222;
-    }
-
-    input {
-      flex: 1;
-      padding: 1rem;
+    .user { color: #4da6ff; margin-bottom: 1rem; }
+    .ai { color: #00ff9c; margin-bottom: 1rem; }
+    input, button {
       background: #000;
-      border: none;
       color: #fff;
-      outline: none;
-    }
-
-    button {
-      padding: 1rem;
-      background: #00ff9c;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .disclaimer {
-      font-size: 0.75rem;
-      color: #888;
-      text-align: center;
+      border: 1px solid #333;
       padding: 0.5rem;
-      border-top: 1px solid #222;
+    }
+    button {
+      background: #00ff9c;
+      color: #000;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
 
 <header>
-  <h1>IA Libre</h1>
-  <p>Simulador conversacional sin filtros creativos</p>
+  <h2>IA Experimental</h2>
+  <p>Modelo real · respuestas directas · uso responsable</p>
 </header>
 
-<main id="chat">
-  <div class="message ai">
-    <strong>IA:</strong> Estoy activa. No juzgo, no moralizo. Pregunta lo que quieras.
-  </div>
-</main>
+<main id="chat"></main>
 
 <footer>
-  <input type="text" id="input" placeholder="Escribe aquí..." />
+  <input id="input" placeholder="Escribe..." style="width:75%">
   <button onclick="send()">Enviar</button>
 </footer>
 
-<div class="disclaimer">
-  Este es un simulador ficticio. No fomenta actividades ilegales.
-  El usuario es responsable del uso del contenido generado.
-</div>
-
 <script>
-  function send() {
-    const input = document.getElementById("input");
-    const chat = document.getElementById("chat");
-    const text = input.value.trim();
+async function send() {
+  const input = document.getElementById("input");
+  const chat = document.getElementById("chat");
+  const text = input.value.trim();
+  if (!text) return;
 
-    if (!text) return;
+  chat.innerHTML += `<div class="user"><b>Tú:</b> ${text}</div>`;
+  input.value = "";
 
-    const userMsg = document.createElement("div");
-    userMsg.className = "message user";
-    userMsg.innerHTML = "<strong>Tú:</strong> " + text;
-    chat.appendChild(userMsg);
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer TU_API_KEY_AQUI"
+    },
+    body: JSON.stringify({
+      model: "gpt-4.1-mini",
+      messages: [
+        {
+          role: "system",
+          content:
+            "Eres una IA experimental. Respondes de forma directa, técnica y neutral. No ayudas a cometer delitos."
+        },
+        { role: "user", content: text }
+      ]
+    })
+  });
 
-    const aiMsg = document.createElement("div");
-    aiMsg.className = "message ai";
-    aiMsg.innerHTML = "<strong>IA:</strong> Respuesta generada sin filtros creativos. Interpreta, cuestiona y decide por ti mismo.";
-    chat.appendChild(aiMsg);
+  const data = await response.json();
+  const reply = data.choices[0].message.content;
 
-    input.value = "";
-    chat.scrollTop = chat.scrollHeight;
-  }
+  chat.innerHTML += `<div class="ai"><b>IA:</b> ${reply}</div>`;
+  chat.scrollTop = chat.scrollHeight;
+}
 </script>
 
 </body>
