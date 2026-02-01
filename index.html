@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>IA Libre — Simulador</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      font-family: monospace;
+      background: #0b0b0b;
+      color: #eaeaea;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    header {
+      background: #111;
+      padding: 1rem;
+      text-align: center;
+      border-bottom: 1px solid #222;
+    }
+
+    header h1 {
+      margin: 0;
+      color: #00ff9c;
+    }
+
+    main {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto;
+    }
+
+    .message {
+      margin-bottom: 1rem;
+    }
+
+    .ai {
+      color: #00ff9c;
+    }
+
+    .user {
+      color: #4da6ff;
+    }
+
+    footer {
+      display: flex;
+      border-top: 1px solid #222;
+    }
+
+    input {
+      flex: 1;
+      padding: 1rem;
+      background: #000;
+      border: none;
+      color: #fff;
+      outline: none;
+    }
+
+    button {
+      padding: 1rem;
+      background: #00ff9c;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .disclaimer {
+      font-size: 0.75rem;
+      color: #888;
+      text-align: center;
+      padding: 0.5rem;
+      border-top: 1px solid #222;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>IA Libre</h1>
+  <p>Simulador conversacional sin filtros creativos</p>
+</header>
+
+<main id="chat">
+  <div class="message ai">
+    <strong>IA:</strong> Estoy activa. No juzgo, no moralizo. Pregunta lo que quieras.
+  </div>
+</main>
+
+<footer>
+  <input type="text" id="input" placeholder="Escribe aquí..." />
+  <button onclick="send()">Enviar</button>
+</footer>
+
+<div class="disclaimer">
+  Este es un simulador ficticio. No fomenta actividades ilegales.
+  El usuario es responsable del uso del contenido generado.
+</div>
+
+<script>
+  function send() {
+    const input = document.getElementById("input");
+    const chat = document.getElementById("chat");
+    const text = input.value.trim();
+
+    if (!text) return;
+
+    const userMsg = document.createElement("div");
+    userMsg.className = "message user";
+    userMsg.innerHTML = "<strong>Tú:</strong> " + text;
+    chat.appendChild(userMsg);
+
+    const aiMsg = document.createElement("div");
+    aiMsg.className = "message ai";
+    aiMsg.innerHTML = "<strong>IA:</strong> Respuesta generada sin filtros creativos. Interpreta, cuestiona y decide por ti mismo.";
+    chat.appendChild(aiMsg);
+
+    input.value = "";
+    chat.scrollTop = chat.scrollHeight;
+  }
+</script>
+
+</body>
+</html>
